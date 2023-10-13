@@ -6,6 +6,12 @@ import tkinter as tk
 
 users = {}
 
+def show_password():
+    if show_password_var.get():
+        password_entry.config(show="")
+    else:
+        password_entry.config(show="*")
+        
 
 def login():
     username = username_entry.get()
@@ -17,19 +23,45 @@ def login():
         login_failed()
 
 def login_successful():
+    root.withdraw()
+    
     success_window = tk.Toplevel(root)
     success_window['bg'] = 'bisque'
-    success_window.title("Войти")
-    success_label = tk.Label(success_window, text="Вы успешно вошли.", font=("Helvetica", 14), bg = 'bisque')
+    success_window.geometry('700x800')
+    success_window.title("Шахматная доска")
+    success_label = tk.Label(success_window, text="Шахматная доска", font=("Helvetica", 14), bg = 'bisque')
     success_label.pack(padx=20, pady=10)
 
-    # Центрируем окно успешного входа
+    board = tk.Canvas(success_window, width=640, height=640)
+    board.pack(padx=20, pady=10)
+
+    # Определяем размеры квадратов на шахматной доске
+    square_size = 80
+
+    # Создаем квадраты на шахматной доске
+    for i in range(8):
+        for j in range(8):
+            x1 = j * square_size
+            y1 = i * square_size
+            x2 = x1 + square_size
+            y2 = y1 + square_size
+
+
+            if (i + j) % 2 == 0:
+                square_color = 'white'
+            else:
+                square_color = 'black'
+                
+            board.create_rectangle(x1, y1, x2, y2, fill=square_color)
+
+     # Центрируем окно успешного входа
     success_window.update_idletasks()
     width = success_window.winfo_width()
     height = success_window.winfo_height()
     x = (success_window.winfo_screenwidth() // 2) - (width // 2)
     y = (success_window.winfo_screenheight() // 2) - (height // 2)
     success_window.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+
 
 def login_failed():
     error_window = tk.Toplevel(root)
@@ -66,7 +98,7 @@ def registration_successful():
     success_label = tk.Label(success_window, text="Вы успешно зарегистрировались.", font=("Helvetica", 14), bg='bisque')
     success_label.pack(padx=20, pady=10)
 
-     # Центрируем окно успешной регистрации
+    # Центрируем окно успешной регистрации
     success_window.update_idletasks()
     width = success_window.winfo_width()
     height = success_window.winfo_height()
@@ -114,6 +146,10 @@ password_label.pack()
 password_entry = tk.Entry(root, show = "*")
 password_entry.pack(pady=5)
 
+show_password_var = tk.BooleanVar()
+show_password_checkbox = tk.Checkbutton(root, text="Показать пароль", variable=show_password_var, command=show_password, font=("Helvetica", 12), bg='bisque')
+show_password_checkbox.pack()
+
 login_button = tk.Button(root, text="Войти", font=("Helvetica", 14), command=login, bg='peru', activebackground='burlywood')
 login_button.pack(pady=10)
 
@@ -127,5 +163,7 @@ height = root.winfo_height()
 x = (root.winfo_screenwidth() // 2) - (width // 2)
 y = (root.winfo_screenheight() // 2) - (height // 2)
 root.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+
+
 
 root.mainloop()
